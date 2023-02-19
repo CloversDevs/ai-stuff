@@ -7,12 +7,22 @@ import openai
 import json
 
 # Recover configurations from a config.json placed next to the script
-def load_config():
-    with open('config.json', 'r') as f:
+# Check if config.json exists
+if not os.path.exists("config.json"):
+    # Ask user for Discord token and OpenAI API key
+    print("config.json file not found.")
+    discord_token = input("Enter Discord bot token: ")
+    openai_key = input("Enter OpenAI API key: ")
+    
+    # Create config.json file with user input
+    with open("config.json", "w") as f:
+        json.dump({"discord_token": discord_token, "openai_key": openai_key}, f)
+else:
+    # Load Discord token and OpenAI API key from config.json file
+    with open("config.json") as f:
         config = json.load(f)
-        return config['discord_token'], config['openai_key']
-
-discord_token, openai_key = load_config()
+        discord_token = config["discord_token"]
+        openai_key = config["openai_key"]
 
 # Set OpenAI API key
 openai.api_key = openai_key
